@@ -6,6 +6,10 @@
   box-sizing: border-box;
 }
 
+.close {
+  background-color: var(--c-fair-pink) !important;
+}
+
 .card {
   border-radius: 16px;
   box-shadow: 0 30px 30px -25px rgba(#4133b7, 0.25);

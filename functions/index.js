@@ -64,18 +64,24 @@ function determineInterestingGames(games) {
       const awayScore = game.scoreboard.score.away;
       const homeScore = game.scoreboard.score.home;
       const difference = Math.abs(awayScore - homeScore);
-      return difference <= 10;
+      return difference <= 8;
     })
-    .filter((game) => {
-      // determine a score for how close the teams where throughout the game
-      const awayPeriods = game.scoreboard.score.awayPeriods;
-      const homePeriods = game.scoreboard.score.homePeriods;
-      const differences = awayPeriods.map((period, index) => {
-        return Math.abs(period - homePeriods[index]);
-      });
-      // if three of the four periods are close, then it's interesting
-      const closePeriods = differences.filter((diff) => diff <= 5);
-      return closePeriods.length >= 3;
+    .sort((a, b) => {
+      // sort by the difference in score
+      const awayScoreA = a.scoreboard.score.away;
+      const homeScoreA = a.scoreboard.score.home;
+      const differenceA = Math.abs(awayScoreA - homeScoreA);
+      const awayScoreB = b.scoreboard.score.away;
+      const homeScoreB = b.scoreboard.score.home;
+      const differenceB = Math.abs(awayScoreB - homeScoreB);
+      return differenceA - differenceB;
+    })
+    .map((game) => {
+      // add difference in score to the game object
+      const awayScore = game.scoreboard.score.away;
+      const homeScore = game.scoreboard.score.home;
+      const difference = Math.abs(awayScore - homeScore);
+      return { ...game, difference };
     });
 }
 
@@ -88,6 +94,7 @@ async function formatGames(games) {
     const homeUrl = await getDownloadURL(storage.bucket().file(`nba/logos/${game.teams.home.abbreviation}.png`));
     formattedGames.push({
       title: game.summary,
+      difference: game.difference,
       awayTeam: { name: game.teams.away.team, abbr: game.teams.away.abbreviation, logo: awayUrl },
       homeTeam: { name: game.teams.home.team, abbr: game.teams.home.abbreviation, logo: homeUrl },
       score: game.scoreboard.score,

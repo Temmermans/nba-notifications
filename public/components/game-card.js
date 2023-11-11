@@ -20,7 +20,7 @@ export default class GameCard extends HTMLElement {
 
   #template = (game) => {
     return `
-      <article class="information [ card ]">
+      <article class="information [ card ] ${game.difference <= 4 ? "close" : ""}">
           <h2 class="title">${game.title}</h2>
           <p class="info">Played at ${game.venue.name} in ${game.venue.city} (${game.venue.state})</p>
           <dl class="details">
