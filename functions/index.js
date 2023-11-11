@@ -1,5 +1,4 @@
 const { onRequest } = require("firebase-functions/v2/https");
-const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { initializeApp } = require("firebase-admin/app");
 const { getStorage, getDownloadURL } = require("firebase-admin/storage");
 const logger = require("firebase-functions/logger");
@@ -108,15 +107,5 @@ exports.getNbaGames = onRequest((request, response) => {
     .catch((error) => {
       logger.info({ msg: "Error getting NBA games", error });
       response.status(500).json({ msg: error.message });
-    });
-});
-
-exports.getNbaGamesSchedule = onSchedule("every day 08:00", async (event) => {
-  return getNbaGames(request.query.date)
-    .then((data) => {
-      // send push notification
-    })
-    .catch((error) => {
-      logger.info({ msg: "Error getting NBA games in schedule", error });
     });
 });
