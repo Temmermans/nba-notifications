@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap");
+
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+}
+
+.card {
+  border-radius: 16px;
+  box-shadow: 0 30px 30px -25px rgba(#4133b7, 0.25);
+  max-width: 300px;
+  margin-bottom: 2.5rem;
+}
+
+.information {
+  background-color: var(--c-white);
+  padding: 1.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  color: var(--c-void);
+  line-height: 1.25;
+}
+
+.title + * {
+  margin-top: 1rem;
+}
+
+.info {
+  color: var(--c-charcoal);
+}
+
+.info + * {
+  margin-top: 1.25rem;
+}
+
+.details {
+  display: flex;
+  gap: 1rem;
+}
+
+.details div {
+  padding: 0.75em 1em;
+  background-color: var(--c-titan-white);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.125em;
+  flex-basis: 50%;
+  justify-content: center;
+}
+
+dt {
+  font-size: 0.875rem;
+  color: var(--c-cold-purple);
+}
+
+dd {
+  color: var(--c-indigo);
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+img {
+  width: 100%;
+}

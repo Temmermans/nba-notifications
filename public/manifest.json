@@ -1,0 +1,17 @@
+{
+  "name": "NBA notifications",
+  "short_name": "NbaNotifications",
+  "theme_color": "#f1eeff",
+  "display": "standalone",
+  "background_color": "#a69fd6",
+  "start_url": "/",
+  "scope": "/",
+  "description": "Get notified when your a good match was played without knowing the results.",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "500x500",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,9 +1,13 @@
 const { onRequest } = require("firebase-functions/v2/https");
+const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { initializeApp } = require("firebase-admin/app");
 const { getStorage, getDownloadURL } = require("firebase-admin/storage");
 const logger = require("firebase-functions/logger");
 const axios = require("axios");
 const NodeCache = require("node-cache");
+const webPush = require("web-push");
+const express = require("express");
+const cors = require("cors");
 
 initializeApp();
 
@@ -99,7 +103,11 @@ async function formatGames(games) {
 
 const myCache = new NodeCache();
 
-exports.getNbaGames = onRequest((request, response) => {
+const app = express();
+
+app.use(cors({ origin: true }));
+
+app.get("/nba/games", (request, response) => {
   return getNbaGames(request.query.date)
     .then((data) => {
       response.json(data);
@@ -107,5 +115,33 @@ exports.getNbaGames = onRequest((request, response) => {
     .catch((error) => {
       logger.info({ msg: "Error getting NBA games", error });
       response.status(500).json({ msg: error.message });
+    });
+});
+
+app.post("/nba/push-register", (req, res) => {
+  myCache.set(`subscription-${JSON.stringify(req.body.subscription)}`, req.body.subscription, 0);
+  res.sendStatus(201);
+});
+
+exports.nbaApi = onRequest(app);
+
+exports.sendNbaPushNotifications = onSchedule("every day 10:00", async () => {
+  webPush.setVapidDetails("https://nba.simoncodes.be", process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
+  return getNbaGames()
+    .then(async (data) => {
+      if (data.length === 0) {
+        logger.info({ msg: "No need to send push notifications. No interesting games found." });
+        return;
+      }
+      for (const key of myCache.keys()) {
+        if (!key.startsWith("subscription-")) return;
+        const subscription = myCache.get(key);
+        await webPush.sendNotification(subscription, `Found ${data.length} games worth watching.`).catch(() => {
+          logger.info({ msg: "Error sending push notifiication to following subscription.", subscription });
+        });
+      }
+    })
+    .catch((error) => {
+      logger.info({ msg: "Error getting NBA games on schedule", error });
     });
 });
