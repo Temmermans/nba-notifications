@@ -19,18 +19,23 @@ export default class GameCard extends HTMLElement {
   }
 
   #template = (game) => {
+    const overtime = game.score.awayPeriods.length > 4;
     return `
-      <article class="information [ card ] ${game.difference <= 4 ? "close" : ""}">
+      <article class="information [ card ] ${game.difference <= 4 || overtime ? "close" : ""}">
           <h2 class="title">${game.title}</h2>
           <p class="info">Played at ${game.venue.name} in ${game.venue.city} (${game.venue.state})</p>
+          Some <span style="color: aqua;">notes</span>:
+          <ol>
+          ${game.notes.map((note) => `<li>${note}</li>`).join("")}
+          </ol>
           <dl class="details">
           <div>
               <dt>${game.awayTeam.name} (${game.awayTeam.abbr})</dt>
-              <dd><img src="${game.awayTeam.logo}"/></dd>
+              <dd><img src="assets/logos/${game.awayTeam.abbr}.png"/></dd>
           </div>
           <div>
               <dt>${game.homeTeam.name} (${game.homeTeam.abbr})</dt>
-              <dd><img src="${game.homeTeam.logo}"/></dd>
+              <dd><img src="assets/logos/${game.homeTeam.abbr}.png"/></dd>
           </div>
           </dl>
       </article>
