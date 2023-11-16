@@ -95,7 +95,7 @@ class NbaApi {
 
     if (this.#cache.get(yesterday)) {
       this.#logger.info({ msg: "Cache hit", date: yesterday });
-      return this.#cache.get(yesterday);
+      return Promise.resolve(this.#cache.get(yesterday));
     } else {
       this.#logger.info({ msg: "Cache miss", date: yesterday });
       return axios.request(options).then((response) => {
